@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Moonwalk Legend Tribute Prompt Generator - Pose Variety Fixed</title>
+<style>
+:root{
+  --bg:#050506;
+  --panel:#111116;
+  --panel2:#171720;
+  --gold:#f4c542;
+  --red:#d71920;
+  --silver:#d9d9df;
+  --white:#ffffff;
+  --muted:#a7a7b1;
+  --blue:#183cff;
+  --purple:#7e22ce;
+  --green:#39ff88;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(215,25,32,.25), transparent 26%),
+    radial-gradient(circle at 85% 15%, rgba(244,197,66,.18), transparent 28%),
+    radial-gradient(circle at 50% 100%, rgba(24,60,255,.22), transparent 35%),
+    linear-gradient(135deg,#020203 0%,#09090e 45%,#030304 100%);
+  color:var(--white);
+  font-family:Arial, Helvetica, sans-serif;
+}
+.wrap{max-width:1250px;margin:0 auto;padding:28px 18px 80px}
+.hero{
+  border:1px solid rgba(244,197,66,.45);
+  border-radius:28px;
+  padding:32px 24px;
+  background:linear-gradient(135deg,rgba(17,17,22,.92),rgba(0,0,0,.78));
+  box-shadow:0 0 40px rgba(244,197,66,.18), inset 0 0 40px rgba(255,255,255,.03);
+  position:relative;
+  overflow:hidden;
+}
+.hero:before{
+  content:"";
+  position:absolute;
+  inset:-80px;
+  background:conic-gradient(from 90deg, transparent, rgba(244,197,66,.12), transparent, rgba(215,25,32,.12), transparent);
+  animation:spin 14s linear infinite;
+  pointer-events:none;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hero > *{position:relative;z-index:1}
+h1{
+  margin:0;
+  font-size:clamp(2rem,5vw,4.6rem);
+  line-height:.95;
+  letter-spacing:-2px;
+  text-transform:uppercase;
+  text-shadow:0 0 18px rgba(244,197,66,.35);
+}
+.sub{
+  margin:14px 0 0;
+  color:var(--silver);
+  font-size:1.05rem;
+  max-width:900px;
+}
+.notice{
+  margin-top:16px;
+  padding:12px 14px;
+  border-left:4px solid var(--gold);
+  background:rgba(244,197,66,.08);
+  border-radius:14px;
+  color:#f3f3f6;
+  font-size:.95rem;
+}
+.marquee{
+  margin:20px 0 0;
+  overflow:hidden;
+  border-radius:999px;
+  background:linear-gradient(90deg,rgba(215,25,32,.9),rgba(244,197,66,.9),rgba(24,60,255,.85));
+  color:#050506;
+  font-weight:900;
+  white-space:nowrap;
+}
+.marquee span{
+  display:inline-block;
+  padding:10px 0;
+  animation:marq 22s linear infinite;
+}
+@keyframes marq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.toolbar{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:12px;
+  margin:20px 0;
+}
+button{
+  border:none;
+  border-radius:16px;
+  padding:14px 16px;
+  color:#050506;
+  background:var(--gold);
+  font-weight:900;
+  cursor:pointer;
+  box-shadow:0 8px 22px rgba(0,0,0,.35);
+  transition:.18s ease;
+}
+button:hover{transform:translateY(-2px);filter:brightness(1.08)}
+button.red{background:var(--red);color:white}
+button.dark{background:#222230;color:white;border:1px solid rgba(255,255,255,.12)}
+button.silver{background:var(--silver)}
+button.blue{background:#2f55ff;color:white}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:16px;
+}
+.card{
+  background:linear-gradient(180deg,rgba(23,23,32,.96),rgba(10,10,14,.96));
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:22px;
+  padding:16px;
+  box-shadow:0 12px 28px rgba(0,0,0,.32);
+}
+.card h2{
+  margin:0 0 12px;
+  font-size:1.05rem;
+  color:var(--gold);
+  letter-spacing:.3px;
+}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{
+  display:block;
+  font-size:.8rem;
+  color:var(--muted);
+  margin:9px 0 6px;
+  font-weight:700;
+}
+select,input,textarea{
+  width:100%;
+  border-radius:13px;
+  border:1px solid rgba(255,255,255,.13);
+  background:#0b0b10;
+  color:white;
+  padding:11px 12px;
+  outline:none;
+}
+textarea{min-height:110px;resize:vertical}
+.outputBox{
+  margin-top:18px;
+  background:#07070a;
+  border:1px solid rgba(244,197,66,.35);
+  border-radius:22px;
+  padding:16px;
+  box-shadow:0 0 30px rgba(244,197,66,.10);
+}
+#output{
+  min-height:310px;
+  white-space:pre-wrap;
+  line-height:1.45;
+  color:#f5f5f8;
+}
+.small{font-size:.82rem;color:var(--muted);margin-top:8px}
+@media(max-width:850px){
+  .grid,.toolbar,.row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <h1>Moonwalk Legend Tribute Prompt Generator</h1>
+    <p class="sub">A fully loaded, original tribute-style generator inspired by iconic pop royalty energy: spooky dance-video drama, black leather rebellion, glitter glove sparkle, fedora silhouettes, stage lights, lean poses, smooth shoes, cinematic posters, and premium social-media-ready image prompts.</p>
+    <div class="notice"><b>Original tribute rule:</b> Use inspired elements only. Do not copy exact celebrity likeness, official album covers, official music video frames, logos, copyrighted choreography stills, or trademarked layouts. Create a new performer with legendary pop energy.</div>
+    <div class="marquee"><span> ✨ Thriller Energy • Bad-Era Swagger • Glove Sparkle • Fedora Magic • Moonwalk Stage • Red Jacket Drama • Smooth Criminal Lean • Pop Royalty Poster Finish ✨ &nbsp;&nbsp;&nbsp; ✨ Thriller Energy • Bad-Era Swagger • Glove Sparkle • Fedora Magic • Moonwalk Stage • Red Jacket Drama • Smooth Criminal Lean • Pop Royalty Poster Finish ✨ </span></div>
+  </section>
+
+  <div class="toolbar">
+    <button onclick="generatePrompt()">Generate Prompt</button>
+    <button class="red" onclick="randomizeAll()">Randomize All</button>
+    <button class="blue" onclick="randomPreset()">Random Preset</button>
+    <button class="silver" onclick="copyPrompt()">Copy Prompt</button>
+    <button class="dark" onclick="clearAll()">Clear All</button>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>1. Preset Vibe</h2>
+      <label>Legendary Era Preset</label>
+      <select id="preset" onchange="applyPreset()">
+        <option value="">None</option>
+        <option>Thriller zombie dance street</option>
+        <option>Red jacket horror-pop poster</option>
+        <option>Bad-era black leather rebellion</option>
+        <option>Smooth white suit gangster lean</option>
+        <option>Billie Jean sidewalk glow</option>
+        <option>Glitter glove close-up</option>
+        <option>Fedora shadow stage pose</option>
+        <option>Moonwalk spotlight performance</option>
+        <option>Anti-gravity lean tribute scene</option>
+        <option>Luxury pop king concert poster</option>
+        <option>Neon 80s music video set</option>
+        <option>Rainy alley dance battle</option>
+        <option>Haunted mansion dance video</option>
+        <option>Gold trophy award-show moment</option>
+        <option>Black-and-white tabloid headline poster</option>
+        <option>Royal military jacket stage entrance</option>
+        <option>Mirror hallway dance illusion</option>
+        <option>Subway platform pop performance</option>
+        <option>Las Vegas lights comeback poster</option>
+        <option>Super Bowl halftime tribute energy</option>
+      </select>
+      <label>Custom Preset Direction</label>
+      <input id="customPreset" placeholder="Type your own vibe..." />
+    </div>
+
+    <div class="card">
+      <h2>2. Main Performer</h2>
+      <div class="row">
+        <div>
+          <label>Performer Archetype</label>
+          <select id="performer">
+            <option>Original pop legend performer</option><option>Mysterious fedora dancer</option><option>Leather-jacket rebel star</option><option>Red-jacket horror dance leader</option><option>White-suit nightclub dancer</option><option>Glitter-glove stage icon</option><option>Moonwalk street performer</option><option>Royal pop commander</option><option>Masked concert superstar</option><option>Shadowy alley dance hero</option>
+          </select>
+        </div>
+        <div>
+          <label>Body / Energy</label>
+          <select id="energy">
+            <option>Slim athletic dance build</option><option>Sharp elegant stage posture</option><option>Explosive dance energy</option><option>Quiet mysterious confidence</option><option>Swagger-heavy rebel energy</option><option>Floating smoothness</option><option>High-drama theatrical pose</option><option>Electric superstar aura</option><option>Clean full-body dance silhouette</option><option>Iconic but original pop-star presence</option>
+          </select>
+        </div>
+      </div>
+      <label>Face Rule</label>
+      <select id="faceRule">
+        <option>Original face, not an exact celebrity likeness</option>
+        <option>Face partly hidden by fedora shadow</option>
+        <option>Stylized poster face, original features</option>
+        <option>Backlit silhouette, no exact face copy</option>
+        <option>Concert-distance face, original performer</option>
+      </select>
+    </div>
+
+    <div class="card">
+      <h2>3. Signature Outfit</h2>
+      <div class="row">
+        <div>
+          <label>Jacket / Top</label>
+          <select id="jacket">
+            <option>Red structured thriller-style jacket</option><option>Black leather bad-era jacket</option><option>White suit jacket with black shirt</option><option>Gold military stage jacket</option><option>Sequined black blazer</option><option>Silver mirrored performance jacket</option><option>Red-and-black zipper jacket</option><option>Royal blue velvet stage jacket</option><option>Black cropped dance jacket</option><option>Crystal-studded concert blazer</option><option>White tuxedo jacket</option><option>Red leather concert coat</option><option>Gold epaulet commander jacket</option><option>Black biker jacket with straps</option><option>Metallic bomber jacket</option>
+          </select>
+        </div>
+        <div>
+          <label>Pants</label>
+          <select id="pants">
+            <option>Cropped black performance pants</option><option>Slim black dress pants</option><option>White tailored suit pants</option><option>Black leather dance pants</option><option>Red striped stage pants</option><option>High-waist 80s trousers</option><option>Gold-trimmed stage pants</option><option>Silver sparkle pants</option><option>Military-style black pants</option><option>Clean tuxedo trousers</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>Glove</label>
+          <select id="glove">
+            <option>Single sparkling rhinestone glove</option><option>Silver sequin glove close-up</option><option>White crystal glove glowing under spotlight</option><option>Black glove with silver accents</option><option>Gold glitter glove</option><option>Finger-point glove pose</option><option>Glove catching stage light</option><option>No glove</option>
+          </select>
+        </div>
+        <div>
+          <label>Fedora / Hat</label>
+          <select id="hat">
+            <option>Black fedora tilted low</option><option>White fedora gangster style</option><option>Silver-trim fedora</option><option>Red ribbon fedora</option><option>Hat held in hand</option><option>Hat tossed mid-air</option><option>Fedora shadow hiding eyes</option><option>No hat</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>4. Shoes + Dance Details</h2>
+      <div class="row">
+        <div>
+          <label>Shoes</label>
+          <select id="shoes">
+            <option>Black loafers with white socks</option><option>Glossy black dance shoes</option><option>White spats over black shoes</option><option>Silver performance loafers</option><option>Patent leather stage shoes</option><option>Moonwalk-ready smooth sole shoes</option><option>White socks glowing under spotlight</option><option>Red-accent stage shoes</option>
+          </select>
+        </div>
+        <div>
+          <label>Dance Move</label>
+          <select id="move">
+            <option>Moonwalk freeze-frame</option><option>Anti-gravity lean pose</option><option>Toe stand spotlight pose</option><option>Fedora grab with sharp lean</option><option>Glove hand point toward camera</option><option>Spin kick dance pose</option><option>Zombie shoulder pop</option><option>Side slide across glowing floor</option><option>One hand on hat, one hand extended</option><option>Full-body concert dance stance</option><option>High-energy group choreography</option><option>Slow smooth criminal lean</option><option>Stage stomp with sparkle burst</option><option>Backslide dance motion trail</option><option>Silhouette toe tap</option><option>Knee drop stage accent</option><option>Shoulder snap dance hit</option><option>Forward glide with turned head</option><option>Sideways heel-toe slide</option><option>Hat toss and floor slide</option><option>Freeze pose with one foot lifted</option><option>Wide-leg power stance with glove raised</option><option>Diagonal runway strut</option><option>Spooky group dance leader pose</option><option>Mic-stand lean with one knee bent</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>Body Angle / Silhouette</label>
+          <select id="bodyAngle">
+            <option>Three-quarter body angle, head turned toward spotlight</option><option>Side-profile glide with one shoulder forward</option><option>Low crouch transition with hat brim shadow</option><option>Back-facing silhouette looking over shoulder</option><option>Diagonal lean with one leg extended</option><option>Wide stance with chest angled left</option><option>Mid-spin body twist with jacket flare</option><option>Front-facing power pose with one knee raised</option><option>Walking-away stage silhouette</option><option>One-foot toe balance with arms offset</option><option>Deep runway stride with coat movement</option><option>Leaning against microphone stand</option><option>Jump-freeze silhouette, feet separated</option><option>Half-kneel dramatic spotlight pose</option><option>Shoulder-pop angle with hips turned opposite</option>
+          </select>
+        </div>
+        <div>
+          <label>Hand / Arm Position</label>
+          <select id="handPosition">
+            <option>One hand gripping fedora brim, other hand open</option><option>Glove hand pointed toward camera, other arm behind</option><option>Both arms spread wide like stage reveal</option><option>One arm across chest, one arm angled down</option><option>Hand floating near microphone stand</option><option>Finger snap pose beside the hip</option><option>Glove hand catching a beam of light</option><option>Both hands low with sharp wrist angles</option><option>Hat held out to the side</option><option>One hand raised above shoulder, palm glowing</option><option>Arms crossed in rebel stance</option><option>One hand on jacket lapel, one hand extended</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>Footwork / Shoe Focus</label>
+          <select id="footwork">
+            <option>White socks clearly visible above glossy shoes</option><option>One toe planted with heel lifted</option><option>Feet sliding opposite directions on glowing floor</option><option>One shoe forward with motion streaks behind it</option><option>Cross-step stance with shoes sharply lit</option><option>Heel-toe angle shown close to camera</option><option>Wide planted stance with smoke around shoes</option><option>Backslide trail glowing under both feet</option><option>Toe stand sparkle burst under front shoe</option><option>Runway step with polished sole highlight</option><option>Side-step with one shoe half off the light tile</option><option>Floor-reflection shoe detail, crisp and readable</option>
+          </select>
+        </div>
+        <div>
+          <label>Fresh Pose Variation Rule</label>
+          <select id="poseVariation">
+            <option>Create a fresh pose that does not repeat the last image</option><option>Use a different body angle, different arm placement, and different foot placement</option><option>Avoid the default standing pose; make the body movement obvious</option><option>Prioritize asymmetry: one arm high, one arm low, one foot forward</option><option>Make the pose feel caught mid-performance, not stiff</option><option>Change the camera angle and silhouette every generation</option><option>Make the shoes and lower-body movement clearly different</option><option>Use a new dance freeze-frame with unique spacing around the performer</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>5. Scene / Location</h2>
+      <label>Location</label>
+      <select id="location">
+        <option>Foggy midnight city street</option><option>Haunted mansion hallway</option><option>Neon subway platform</option><option>Luxury concert stage</option><option>Rainy alley with glowing pavement</option><option>Abandoned theater stage</option><option>Blue-lit nightclub</option><option>Mirror dance studio</option><option>Cemetery dance scene, original design</option><option>Rooftop under full moon</option><option>Old Hollywood gangster lounge</option><option>Warehouse dance battle floor</option><option>Gold award-show stage</option><option>Electric sidewalk with glowing tiles</option><option>Retro 80s music video set</option><option>Smoke-filled arena entrance</option><option>Velvet curtain reveal stage</option><option>Black-and-white newspaper city street</option><option>Stormy concert runway</option><option>Grand palace pop performance hall</option>
+      </select>
+      <label>Background Props</label>
+      <select id="props">
+        <option>Glowing sidewalk tiles</option><option>Old street lamps and fog</option><option>Red theater curtains</option><option>Zombie dancers in the distance</option><option>Vintage microphone stand</option><option>Mirror reflections</option><option>Floating music notes made of light</option><option>Sparkle dust around glove</option><option>Broken neon signs</option><option>Gold stairs and stage smoke</option><option>Full moon and bats</option><option>Luxury chandelier</option><option>Camera flashes</option><option>Vinyl records on wall</option><option>Crystal spotlight beams</option><option>Retro boombox</option><option>Black panther statue, original symbol</option><option>Graffiti wall with no logos</option><option>Film camera silhouette</option><option>Smoke cannons</option>
+      </select>
+    </div>
+
+    <div class="card">
+      <h2>6. Mood + Lighting</h2>
+      <div class="row">
+        <div>
+          <label>Mood</label>
+          <select id="mood">
+            <option>Spooky thriller excitement</option><option>Bold rebel confidence</option><option>Luxury pop royalty</option><option>Mysterious smooth cool</option><option>Electric concert energy</option><option>Haunted dance-party drama</option><option>Clean premium tribute mood</option><option>Retro music-video nostalgia</option><option>High-fashion stage intensity</option><option>Legendary final-boss performer energy</option>
+          </select>
+        </div>
+        <div>
+          <label>Lighting</label>
+          <select id="lighting">
+            <option>Hard white spotlight</option><option>Red horror backlight</option><option>Blue neon rim lighting</option><option>Gold stage beams</option><option>Moonlight through fog</option><option>Strobe concert lighting</option><option>Flashbulb paparazzi glow</option><option>Green thriller fog glow</option><option>Purple nightclub light</option><option>Black-and-white noir lighting</option><option>Silver mirror reflections</option><option>Lightning storm stage flash</option>
+          </select>
+        </div>
+      </div>
+      <label>Color Palette</label>
+      <select id="palette">
+        <option>Red black and silver</option><option>Black white and gold</option><option>Electric blue and silver</option><option>Thriller red and smoky purple</option><option>Bad-era black leather and chrome</option><option>Neon green and midnight black</option><option>Royal gold and velvet black</option><option>Blood red and fog gray</option><option>Stage white and deep blue</option><option>Magenta neon and black</option><option>Classic black white and red</option><option>Luxury champagne and obsidian</option>
+      </select>
+    </div>
+
+    <div class="card">
+      <h2>7. Camera + Composition</h2>
+      <div class="row">
+        <div>
+          <label>Framing</label>
+          <select id="framing">
+            <option>Full-body vertical poster</option><option>Low-angle superstar pose</option><option>Close-up on glove and fedora</option><option>Wide dance crew scene</option><option>Album-cover square crop</option><option>Movie poster triangle composition</option><option>Overhead stage spotlight circle</option><option>Security-camera music video angle</option><option>Side profile moonwalk motion</option><option>Hero centered with dancers behind</option><option>Split portrait and dance scene</option><option>Magazine cover composition</option>
+          </select>
+        </div>
+        <div>
+          <label>Format</label>
+          <select id="format">
+            <option>9:16 TikTok poster</option><option>4:5 Instagram poster</option><option>1:1 album cover</option><option>16:9 YouTube thumbnail</option><option>2:3 cinematic movie poster</option><option>3:4 premium portrait poster</option><option>Landscape concert banner</option><option>Vertical phone wallpaper</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>8. Typography</h2>
+      <label>Poster Text</label>
+      <select id="text">
+        <option>THE NIGHT STARTS NOW</option><option>BAD NEVER LOOKED THIS GOOD</option><option>MOONWALK INTO LEGEND</option><option>THE GLOVE SAID EVERYTHING</option><option>SMOOTH AFTER MIDNIGHT</option><option>THE KING ENERGY RETURNS</option><option>ONE STEP. THE WORLD WATCHED.</option><option>RED JACKET. BIG TROUBLE.</option><option>LEGEND IN THE SPOTLIGHT</option><option>DANCE LIKE THE FLOOR IS ON FIRE</option><option>THRILL THE NIGHT</option><option>HAT LOW. LIGHTS HIGH.</option><option>THE STAGE BELONGS TO HIM</option><option>WHEN THE BEAT HITS</option><option>NO ORDINARY PERFORMER</option>
+      </select>
+      <label>Custom Text</label>
+      <input id="customText" placeholder="Type exact poster text..." />
+      <label>Typography Style</label>
+      <select id="typo">
+        <option>Bold 80s music-video title</option><option>Horror red thriller lettering</option><option>Chrome pop-star typography</option><option>Gold luxury concert lettering</option><option>Black-and-white noir title</option><option>Neon nightclub type</option><option>Street poster graffiti accents</option><option>Clean premium magazine font</option><option>Retro VHS title text</option><option>Giant readable block letters</option><option>Sparkling glove-inspired lettering</option><option>Emergency red poster headline</option>
+      </select>
+    </div>
+
+    <div class="card">
+      <h2>9. Art Style + Finish</h2>
+      <div class="row">
+        <div>
+          <label>Art Style</label>
+          <select id="art">
+            <option>Cinematic realistic tribute poster</option><option>Premium album cover realism</option><option>Retro 80s music video still</option><option>High-fashion editorial poster</option><option>Graphic novel concert poster</option><option>Dark thriller movie-poster realism</option><option>Luxury stage photography</option><option>Neon cyber-pop poster</option><option>Vintage VHS promo still</option><option>Polished social media thumbnail</option><option>Magazine cover tribute art</option><option>Concert tour poster style</option>
+          </select>
+        </div>
+        <div>
+          <label>Finish</label>
+          <select id="finish">
+            <option>Glossy commercial poster finish</option><option>Rain droplets on lens</option><option>Smoke and sparkle atmosphere</option><option>Film grain VHS texture</option><option>Clean sharp premium finish</option><option>High-contrast spotlight finish</option><option>Chrome and glitter shine</option><option>Dark cinematic fog finish</option><option>Luxury gold foil poster finish</option><option>Retro magazine print finish</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>10. Extra Details</h2>
+      <label>Special Effects</label>
+      <select id="effects">
+        <option>Motion trails following the dance move</option><option>Sparkles bursting from the glove</option><option>Fog rolling around the shoes</option><option>Spotlight halo behind fedora</option><option>Glowing floor under moonwalk path</option><option>Zombie silhouettes in fog</option><option>Camera flash starbursts</option><option>Lightning behind stage</option><option>Floating red jacket highlights</option><option>Silver dust around toe stand</option><option>Neon outline around performer</option><option>Music-note light particles</option>
+      </select>
+      <label>Quality Rule</label>
+      <select id="quality">
+        <option>Strong readable poster composition</option><option>Clean full-body anatomy and correct hands</option><option>Bold text away from face, hat, glove, and shoes</option><option>Commercially usable original tribute design</option><option>No clutter, no blurry text, no random logos</option><option>Premium social-media-ready finish</option><option>Sharp silhouette and dramatic stage presence</option><option>Exact text must be spelled correctly</option>
+      </select>
+      <label>Custom Extra Direction</label>
+      <textarea id="customExtra" placeholder="Add your extra magic here..."></textarea>
+    </div>
+  </div>
+
+  <div class="outputBox">
+    <div class="toolbar" style="margin-top:0">
+      <button onclick="generatePrompt()">Generate</button>
+      <button class="silver" onclick="copyPrompt()">Copy Plain Text</button>
+      <button class="blue" onclick="savePrompt()">Save .txt</button>
+      <button class="dark" onclick="clearOutput()">Clear Output</button>
+      <button class="red" onclick="randomizeAll();generatePrompt()">Random + Generate</button>
+    </div>
+    <div id="output">Your generated prompt will appear here.</div>
+    <div class="small">Copy button copies plain text only — no HTML junk.</div>
+  </div>
+</div>
+
+<script>
+const basePreset = {
+  performer:"Original pop legend performer",
+  energy:"Slim athletic dance build",
+  faceRule:"Original face, not an exact celebrity likeness",
+  jacket:"Red structured thriller-style jacket",
+  pants:"Cropped black performance pants",
+  glove:"Single sparkling rhinestone glove",
+  hat:"Black fedora tilted low",
+  shoes:"Black loafers with white socks",
+  move:"Moonwalk freeze-frame",
+  location:"Foggy midnight city street",
+  props:"Glowing sidewalk tiles",
+  mood:"Electric concert energy",
+  lighting:"Hard white spotlight",
+  palette:"Red black and silver",
+  framing:"Full-body vertical poster",
+  format:"9:16 TikTok poster",
+  text:"THE NIGHT STARTS NOW",
+  typo:"Bold 80s music-video title",
+  art:"Cinematic realistic tribute poster",
+  finish:"Glossy commercial poster finish",
+  effects:"Motion trails following the dance move",
+  quality:"Strong readable poster composition"
+};
+
+const presetMap = {
+  "Thriller zombie dance street": {
+    performer:"Red-jacket horror dance leader", energy:"Explosive dance energy", faceRule:"Original face, not an exact celebrity likeness", jacket:"Red structured thriller-style jacket", pants:"Cropped black performance pants", glove:"Single sparkling rhinestone glove", hat:"Black fedora tilted low", shoes:"Black loafers with white socks", move:"Zombie shoulder pop", location:"Foggy midnight city street", props:"Zombie dancers in the distance", mood:"Spooky thriller excitement", lighting:"Green thriller fog glow", palette:"Thriller red and smoky purple", framing:"Wide dance crew scene", format:"9:16 TikTok poster", text:"THRILL THE NIGHT", typo:"Horror red thriller lettering", art:"Dark thriller movie-poster realism", finish:"Dark cinematic fog finish", effects:"Zombie silhouettes in fog", quality:"Bold text away from face, hat, glove, and shoes"
+  },
+  "Red jacket horror-pop poster": {
+    performer:"Red-jacket horror dance leader", energy:"High-drama theatrical pose", faceRule:"Stylized poster face, original features", jacket:"Red-and-black zipper jacket", pants:"Cropped black performance pants", glove:"Single sparkling rhinestone glove", hat:"Black fedora tilted low", shoes:"Black loafers with white socks", move:"High-energy group choreography", location:"Cemetery dance scene, original design", props:"Full moon and bats", mood:"Haunted dance-party drama", lighting:"Red horror backlight", palette:"Red black and silver", framing:"Movie poster triangle composition", format:"2:3 cinematic movie poster", text:"RED JACKET. BIG TROUBLE.", typo:"Horror red thriller lettering", art:"Dark thriller movie-poster realism", finish:"Smoke and sparkle atmosphere", effects:"Floating red jacket highlights", quality:"Commercially usable original tribute design"
+  },
+  "Bad-era black leather rebellion": {
+    performer:"Leather-jacket rebel star", energy:"Swagger-heavy rebel energy", faceRule:"Original face, not an exact celebrity likeness", jacket:"Black leather bad-era jacket", pants:"Black leather dance pants", glove:"Black glove with silver accents", hat:"Black fedora tilted low", shoes:"Glossy black dance shoes", move:"Fedora grab with sharp lean", location:"Rainy alley with glowing pavement", props:"Broken neon signs", mood:"Bold rebel confidence", lighting:"Blue neon rim lighting", palette:"Bad-era black leather and chrome", framing:"Low-angle superstar pose", format:"4:5 Instagram poster", text:"BAD NEVER LOOKED THIS GOOD", typo:"Chrome pop-star typography", art:"Premium album cover realism", finish:"Rain droplets on lens", effects:"Neon outline around performer", quality:"Sharp silhouette and dramatic stage presence"
+  },
+  "Smooth white suit gangster lean": {
+    performer:"White-suit nightclub dancer", energy:"Floating smoothness", faceRule:"Face partly hidden by fedora shadow", jacket:"White suit jacket with black shirt", pants:"White tailored suit pants", glove:"No glove", hat:"White fedora gangster style", shoes:"White spats over black shoes", move:"Slow smooth criminal lean", location:"Old Hollywood gangster lounge", props:"Vintage microphone stand", mood:"Mysterious smooth cool", lighting:"Black-and-white noir lighting", palette:"Black white and gold", framing:"Side profile moonwalk motion", format:"3:4 premium portrait poster", text:"SMOOTH AFTER MIDNIGHT", typo:"Black-and-white noir title", art:"High-fashion editorial poster", finish:"High-contrast spotlight finish", effects:"Silver dust around toe stand", quality:"Clean full-body anatomy and correct hands"
+  },
+  "Billie Jean sidewalk glow": {
+    performer:"Moonwalk street performer", energy:"Floating smoothness", faceRule:"Concert-distance face, original performer", jacket:"Sequined black blazer", pants:"Slim black dress pants", glove:"Single sparkling rhinestone glove", hat:"Black fedora tilted low", shoes:"Black loafers with white socks", move:"Moonwalk freeze-frame", location:"Electric sidewalk with glowing tiles", props:"Glowing sidewalk tiles", mood:"Electric concert energy", lighting:"Stage white and deep blue", palette:"Stage white and deep blue", framing:"Side profile moonwalk motion", format:"9:16 TikTok poster", text:"MOONWALK INTO LEGEND", typo:"Bold 80s music-video title", art:"Retro 80s music video still", finish:"Clean sharp premium finish", effects:"Glowing floor under moonwalk path", quality:"Exact text must be spelled correctly"
+  },
+  "Glitter glove close-up": {
+    performer:"Glitter-glove stage icon", energy:"Sharp elegant stage posture", faceRule:"Face partly hidden by fedora shadow", jacket:"Crystal-studded concert blazer", pants:"Slim black dress pants", glove:"White crystal glove glowing under spotlight", hat:"Black fedora tilted low", shoes:"Patent leather stage shoes", move:"Glove hand point toward camera", location:"Luxury concert stage", props:"Sparkle dust around glove", mood:"Luxury pop royalty", lighting:"Hard white spotlight", palette:"Black white and gold", framing:"Close-up on glove and fedora", format:"4:5 Instagram poster", text:"THE GLOVE SAID EVERYTHING", typo:"Sparkling glove-inspired lettering", art:"Premium album cover realism", finish:"Chrome and glitter shine", effects:"Sparkles bursting from the glove", quality:"Bold text away from face, hat, glove, and shoes"
+  },
+  "Fedora shadow stage pose": {
+    performer:"Mysterious fedora dancer", energy:"Quiet mysterious confidence", faceRule:"Face partly hidden by fedora shadow", jacket:"Black cropped dance jacket", pants:"Cropped black performance pants", glove:"Single sparkling rhinestone glove", hat:"Black fedora tilted low", shoes:"Black loafers with white socks", move:"One hand on hat, one hand extended", location:"Smoke-filled arena entrance", props:"Crystal spotlight beams", mood:"Mysterious smooth cool", lighting:"Hard white spotlight", palette:"Classic black white and red", framing:"Low-angle superstar pose", format:"9:16 TikTok poster", text:"HAT LOW. LIGHTS HIGH.", typo:"Giant readable block letters", art:"Cinematic realistic tribute poster", finish:"High-contrast spotlight finish", effects:"Spotlight halo behind fedora", quality:"Sharp silhouette and dramatic stage presence"
+  },
+  "Moonwalk spotlight performance": {
+    performer:"Moonwalk street performer", energy:"Floating smoothness", faceRule:"Concert-distance face, original performer", jacket:"Silver mirrored performance jacket", pants:"Slim black dress pants", glove:"Silver sequin glove close-up", hat:"Black fedora tilted low", shoes:"Moonwalk-ready smooth sole shoes", move:"Moonwalk freeze-frame", location:"Luxury concert stage", props:"Smoke cannons", mood:"Electric concert energy", lighting:"Gold stage beams", palette:"Electric blue and silver", framing:"Full-body vertical poster", format:"9:16 TikTok poster", text:"ONE STEP. THE WORLD WATCHED.", typo:"Chrome pop-star typography", art:"Luxury stage photography", finish:"Glossy commercial poster finish", effects:"Motion trails following the dance move", quality:"Clean full-body anatomy and correct hands"
+  },
+  "Anti-gravity lean tribute scene": {
+    performer:"Mysterious fedora dancer", energy:"Sharp elegant stage posture", faceRule:"Stylized poster face, original features", jacket:"White tuxedo jacket", pants:"Black leather dance pants", glove:"No glove", hat:"White fedora gangster style", shoes:"White spats over black shoes", move:"Anti-gravity lean pose", location:"Mirror dance studio", props:"Mirror reflections", mood:"Mysterious smooth cool", lighting:"Silver mirror reflections", palette:"Black white and gold", framing:"Side profile moonwalk motion", format:"3:4 premium portrait poster", text:"SMOOTH AFTER MIDNIGHT", typo:"Black-and-white noir title", art:"High-fashion editorial poster", finish:"Clean sharp premium finish", effects:"Silver dust around toe stand", quality:"Clean full-body anatomy and correct hands"
+  },
+  "Luxury pop king concert poster": {
+    performer:"Royal pop commander", energy:"Legendary final-boss performer energy", faceRule:"Original face, not an exact celebrity likeness", jacket:"Gold military stage jacket", pants:"Gold-trimmed stage pants", glove:"Gold glitter glove", hat:"Black fedora tilted low", shoes:"Patent leather stage shoes", move:"Toe stand spotlight pose", location:"Grand palace pop performance hall", props:"Gold stairs and stage smoke", mood:"Luxury pop royalty", lighting:"Gold stage beams", palette:"Royal gold and velvet black", framing:"Movie poster triangle composition", format:"2:3 cinematic movie poster", text:"LEGEND IN THE SPOTLIGHT", typo:"Gold luxury concert lettering", art:"Concert tour poster style", finish:"Luxury gold foil poster finish", effects:"Camera flash starbursts", quality:"Premium social-media-ready finish"
+  },
+  "Neon 80s music video set": {
+    performer:"Original pop legend performer", energy:"Electric superstar aura", faceRule:"Stylized poster face, original features", jacket:"Metallic bomber jacket", pants:"Silver sparkle pants", glove:"Silver sequin glove close-up", hat:"Silver-trim fedora", shoes:"Silver performance loafers", move:"Side slide across glowing floor", location:"Retro 80s music video set", props:"Retro boombox", mood:"Retro music-video nostalgia", lighting:"Purple nightclub light", palette:"Magenta neon and black", framing:"Album-cover square crop", format:"1:1 album cover", text:"WHEN THE BEAT HITS", typo:"Retro VHS title text", art:"Retro 80s music video still", finish:"Film grain VHS texture", effects:"Music-note light particles", quality:"Exact text must be spelled correctly"
+  },
+  "Rainy alley dance battle": {
+    performer:"Shadowy alley dance hero", energy:"Explosive dance energy", faceRule:"Backlit silhouette, no exact face copy", jacket:"Black biker jacket with straps", pants:"Black leather dance pants", glove:"Black glove with silver accents", hat:"Black fedora tilted low", shoes:"Glossy black dance shoes", move:"Spin kick dance pose", location:"Rainy alley with glowing pavement", props:"Broken neon signs", mood:"Bold rebel confidence", lighting:"Blue neon rim lighting", palette:"Electric blue and silver", framing:"Security-camera music video angle", format:"16:9 YouTube thumbnail", text:"DANCE LIKE THE FLOOR IS ON FIRE", typo:"Street poster graffiti accents", art:"Neon cyber-pop poster", finish:"Rain droplets on lens", effects:"Neon outline around performer", quality:"No clutter, no blurry text, no random logos"
+  },
+  "Haunted mansion dance video": {
+    performer:"Red-jacket horror dance leader", energy:"High-drama theatrical pose", faceRule:"Original face, not an exact celebrity likeness", jacket:"Red leather concert coat", pants:"Cropped black performance pants", glove:"Single sparkling rhinestone glove", hat:"Black fedora tilted low", shoes:"Black loafers with white socks", move:"Zombie shoulder pop", location:"Haunted mansion hallway", props:"Red theater curtains", mood:"Haunted dance-party drama", lighting:"Moonlight through fog", palette:"Blood red and fog gray", framing:"Movie poster triangle composition", format:"9:16 TikTok poster", text:"THE NIGHT STARTS NOW", typo:"Horror red thriller lettering", art:"Dark thriller movie-poster realism", finish:"Dark cinematic fog finish", effects:"Zombie silhouettes in fog", quality:"Commercially usable original tribute design"
+  },
+  "Gold trophy award-show moment": {
+    performer:"Glitter-glove stage icon", energy:"Electric superstar aura", faceRule:"Original face, not an exact celebrity likeness", jacket:"Crystal-studded concert blazer", pants:"Gold-trimmed stage pants", glove:"Gold glitter glove", hat:"Hat held in hand", shoes:"Patent leather stage shoes", move:"Toe stand spotlight pose", location:"Gold award-show stage", props:"Camera flashes", mood:"Luxury pop royalty", lighting:"Flashbulb paparazzi glow", palette:"Luxury champagne and obsidian", framing:"Magazine cover composition", format:"4:5 Instagram poster", text:"THE KING ENERGY RETURNS", typo:"Gold luxury concert lettering", art:"Magazine cover tribute art", finish:"Luxury gold foil poster finish", effects:"Camera flash starbursts", quality:"Premium social-media-ready finish"
+  },
+  "Black-and-white tabloid headline poster": {
+    performer:"Masked concert superstar", energy:"Quiet mysterious confidence", faceRule:"Backlit silhouette, no exact face copy", jacket:"Black cropped dance jacket", pants:"Slim black dress pants", glove:"Black glove with silver accents", hat:"Black fedora tilted low", shoes:"Glossy black dance shoes", move:"Fedora grab with sharp lean", location:"Black-and-white newspaper city street", props:"Film camera silhouette", mood:"Mysterious smooth cool", lighting:"Black-and-white noir lighting", palette:"Classic black white and red", framing:"Magazine cover composition", format:"3:4 premium portrait poster", text:"NO ORDINARY PERFORMER", typo:"Clean premium magazine font", art:"Magazine cover tribute art", finish:"Retro magazine print finish", effects:"Camera flash starbursts", quality:"No clutter, no blurry text, no random logos"
+  },
+  "Royal military jacket stage entrance": {
+    performer:"Royal pop commander", energy:"Legendary final-boss performer energy", faceRule:"Original face, not an exact celebrity likeness", jacket:"Gold epaulet commander jacket", pants:"Military-style black pants", glove:"White crystal glove glowing under spotlight", hat:"Black fedora tilted low", shoes:"Patent leather stage shoes", move:"Full-body concert dance stance", location:"Smoke-filled arena entrance", props:"Smoke cannons", mood:"Luxury pop royalty", lighting:"Gold stage beams", palette:"Royal gold and velvet black", framing:"Hero centered with dancers behind", format:"2:3 cinematic movie poster", text:"THE STAGE BELONGS TO HIM", typo:"Gold luxury concert lettering", art:"Concert tour poster style", finish:"Chrome and glitter shine", effects:"Spotlight halo behind fedora", quality:"Sharp silhouette and dramatic stage presence"
+  },
+  "Mirror hallway dance illusion": {
+    performer:"Mysterious fedora dancer", energy:"Floating smoothness", faceRule:"Stylized poster face, original features", jacket:"Sequined black blazer", pants:"Slim black dress pants", glove:"Silver sequin glove close-up", hat:"Black fedora tilted low", shoes:"Black loafers with white socks", move:"Side slide across glowing floor", location:"Mirror dance studio", props:"Mirror reflections", mood:"Mysterious smooth cool", lighting:"Silver mirror reflections", palette:"Electric blue and silver", framing:"Split portrait and dance scene", format:"4:5 Instagram poster", text:"MOONWALK INTO LEGEND", typo:"Chrome pop-star typography", art:"Premium album cover realism", finish:"Clean sharp premium finish", effects:"Motion trails following the dance move", quality:"Clean full-body anatomy and correct hands"
+  },
+  "Subway platform pop performance": {
+    performer:"Moonwalk street performer", energy:"Electric superstar aura", faceRule:"Concert-distance face, original performer", jacket:"Royal blue velvet stage jacket", pants:"High-waist 80s trousers", glove:"Single sparkling rhinestone glove", hat:"Red ribbon fedora", shoes:"Red-accent stage shoes", move:"Stage stomp with sparkle burst", location:"Neon subway platform", props:"Retro boombox", mood:"Retro music-video nostalgia", lighting:"Blue neon rim lighting", palette:"Electric blue and silver", framing:"Wide dance crew scene", format:"16:9 YouTube thumbnail", text:"WHEN THE BEAT HITS", typo:"Neon nightclub type", art:"Neon cyber-pop poster", finish:"Glossy commercial poster finish", effects:"Music-note light particles", quality:"Premium social-media-ready finish"
+  },
+  "Las Vegas lights comeback poster": {
+    performer:"Glitter-glove stage icon", energy:"Electric superstar aura", faceRule:"Original face, not an exact celebrity likeness", jacket:"Silver mirrored performance jacket", pants:"Silver sparkle pants", glove:"White crystal glove glowing under spotlight", hat:"Silver-trim fedora", shoes:"Silver performance loafers", move:"Full-body concert dance stance", location:"Luxury concert stage", props:"Camera flashes", mood:"Luxury pop royalty", lighting:"Strobe concert lighting", palette:"Royal gold and velvet black", framing:"Hero centered with dancers behind", format:"Landscape concert banner", text:"LEGEND IN THE SPOTLIGHT", typo:"Chrome pop-star typography", art:"Luxury stage photography", finish:"Chrome and glitter shine", effects:"Camera flash starbursts", quality:"Premium social-media-ready finish"
+  },
+  "Super Bowl halftime tribute energy": {
+    performer:"Royal pop commander", energy:"Explosive dance energy", faceRule:"Concert-distance face, original performer", jacket:"Gold military stage jacket", pants:"Military-style black pants", glove:"Single sparkling rhinestone glove", hat:"Black fedora tilted low", shoes:"Black loafers with white socks", move:"High-energy group choreography", location:"Smoke-filled arena entrance", props:"Smoke cannons", mood:"Electric concert energy", lighting:"Strobe concert lighting", palette:"Red black and silver", framing:"Wide dance crew scene", format:"16:9 YouTube thumbnail", text:"THE STAGE BELONGS TO HIM", typo:"Giant readable block letters", art:"Concert tour poster style", finish:"Glossy commercial poster finish", effects:"Lightning behind stage", quality:"Premium social-media-ready finish"
+  }
+};
+
+function val(id){return document.getElementById(id).value.trim();}
+function setVal(id,value){
+  const el=document.getElementById(id);
+  if(!el || !value) return;
+  [...el.options].forEach(o=>{ if(o.value===value || o.text===value){ el.value=o.value; } });
+}
+
+function pickFrom(list){ return list[Math.floor(Math.random()*list.length)]; }
+function setPoseVariationForPreset(p){
+  const poseBank = {
+    "Thriller zombie dance street": {bodyAngle:["Low crouch transition with hat brim shadow","Wide stance with chest angled left","Shoulder-pop angle with hips turned opposite"], handPosition:["Both hands low with sharp wrist angles","One arm across chest, one arm angled down","Both arms spread wide like stage reveal"], footwork:["Wide planted stance with smoke around shoes","Cross-step stance with shoes sharply lit","Side-step with one shoe half off the light tile"]},
+    "Red jacket horror-pop poster": {bodyAngle:["Mid-spin body twist with jacket flare","Jump-freeze silhouette, feet separated","Diagonal lean with one leg extended"], handPosition:["Both arms spread wide like stage reveal","One hand raised above shoulder, palm glowing","One hand on jacket lapel, one hand extended"], footwork:["One shoe forward with motion streaks behind it","Wide planted stance with smoke around shoes","Toe stand sparkle burst under front shoe"]},
+    "Bad-era black leather rebellion": {bodyAngle:["Deep runway stride with coat movement","Wide stance with chest angled left","Front-facing power pose with one knee raised"], handPosition:["Arms crossed in rebel stance","Finger snap pose beside the hip","One hand gripping fedora brim, other hand open"], footwork:["Runway step with polished sole highlight","Cross-step stance with shoes sharply lit","Heel-toe angle shown close to camera"]},
+    "Smooth white suit gangster lean": {bodyAngle:["Diagonal lean with one leg extended","Leaning against microphone stand","Side-profile glide with one shoulder forward"], handPosition:["Hand floating near microphone stand","Hat held out to the side","One hand gripping fedora brim, other hand open"], footwork:["One toe planted with heel lifted","Floor-reflection shoe detail, crisp and readable","Cross-step stance with shoes sharply lit"]},
+    "Billie Jean sidewalk glow": {bodyAngle:["Side-profile glide with one shoulder forward","Walking-away stage silhouette","One-foot toe balance with arms offset"], handPosition:["Glove hand catching a beam of light","One arm across chest, one arm angled down","Finger snap pose beside the hip"], footwork:["Backslide trail glowing under both feet","Feet sliding opposite directions on glowing floor","One shoe forward with motion streaks behind it"]}
+  };
+  const fallback = {
+    bodyAngle:["Three-quarter body angle, head turned toward spotlight","Back-facing silhouette looking over shoulder","Mid-spin body twist with jacket flare","Half-kneel dramatic spotlight pose"],
+    handPosition:["Glove hand pointed toward camera, other arm behind","One hand on jacket lapel, one hand extended","Both arms spread wide like stage reveal","Hat held out to the side"],
+    footwork:["One toe planted with heel lifted","Feet sliding opposite directions on glowing floor","Heel-toe angle shown close to camera","Wide planted stance with smoke around shoes"]
+  };
+  const chosen = poseBank[p] || fallback;
+  setVal("bodyAngle", pickFrom(chosen.bodyAngle));
+  setVal("handPosition", pickFrom(chosen.handPosition));
+  setVal("footwork", pickFrom(chosen.footwork));
+  setVal("poseVariation", pickFrom([
+    "Create a fresh pose that does not repeat the last image",
+    "Use a different body angle, different arm placement, and different foot placement",
+    "Avoid the default standing pose; make the body movement obvious",
+    "Prioritize asymmetry: one arm high, one arm low, one foot forward",
+    "Make the pose feel caught mid-performance, not stiff",
+    "Change the camera angle and silhouette every generation",
+    "Make the shoes and lower-body movement clearly different",
+    "Use a new dance freeze-frame with unique spacing around the performer"
+  ]));
+}
+function applyPreset(){
+  const p=val("preset");
+  const map=presetMap[p];
+  if(!map) return;
+  Object.entries(map).forEach(([k,v])=>setVal(k,v));
+  setPoseVariationForPreset(p);
+  generatePrompt();
+}
+function randomOption(id){
+  const el=document.getElementById(id);
+  if(!el || el.tagName !== "SELECT") return;
+  const opts=[...el.options].filter(o=>o.value !== "");
+  el.selectedIndex = [...el.options].indexOf(opts[Math.floor(Math.random()*opts.length)]);
+}
+function randomizeAll(){
+  document.querySelectorAll("select").forEach(s=>{
+    if(s.id !== "preset") randomOption(s.id);
+  });
+  generatePrompt();
+}
+function randomPreset(){
+  randomOption("preset");
+  applyPreset();
+}
+function buildLine(label,value){
+  if(!value) return "";
+  return label + ": " + value + ".\n";
+}
+function generatePrompt(){
+  const posterText = val("customText") || val("text");
+  const preset = val("customPreset") || val("preset");
+
+  let prompt = "";
+  prompt += "Create a high-quality original pop-legend tribute image inspired by iconic 1980s and 1990s superstar performance energy. Use original visual design only. Do not copy exact celebrity likeness, official album covers, official music video frames, logos, copyrighted choreography stills, or trademarked layouts. Create a new performer with legendary moonwalk-era pop energy.\n\n";
+  prompt += buildLine("Preset vibe", preset);
+  prompt += buildLine("Main performer", val("performer"));
+  prompt += buildLine("Body and performance energy", val("energy"));
+  prompt += buildLine("Face rule", val("faceRule"));
+  prompt += buildLine("Jacket or top", val("jacket"));
+  prompt += buildLine("Pants", val("pants"));
+  prompt += buildLine("Signature glove", val("glove"));
+  prompt += buildLine("Fedora or hat", val("hat"));
+  prompt += buildLine("Shoes", val("shoes"));
+  prompt += buildLine("Dance move", val("move"));
+  prompt += buildLine("Body angle and silhouette", val("bodyAngle"));
+  prompt += buildLine("Hand and arm position", val("handPosition"));
+  prompt += buildLine("Footwork and shoe focus", val("footwork"));
+  prompt += buildLine("Fresh pose variation rule", val("poseVariation"));
+  prompt += buildLine("Scene or location", val("location"));
+  prompt += buildLine("Background props", val("props"));
+  prompt += buildLine("Mood", val("mood"));
+  prompt += buildLine("Lighting", val("lighting"));
+  prompt += buildLine("Color palette", val("palette"));
+  prompt += buildLine("Camera and framing", val("framing"));
+  prompt += buildLine("Format", val("format"));
+  prompt += buildLine("Poster text", posterText);
+  prompt += buildLine("Typography style", val("typo"));
+  prompt += buildLine("Art style", val("art"));
+  prompt += buildLine("Poster finish", val("finish"));
+  prompt += buildLine("Special effects", val("effects"));
+  prompt += buildLine("Quality rule", val("quality"));
+  if(val("customExtra")) prompt += "Extra custom direction: " + val("customExtra") + "\n";
+
+  prompt += "\nStyle lock: cinematic pop-concert poster energy, dramatic spotlight, sharp full-body dance silhouette, clean anatomy, correct hands, clear shoes, readable typography, premium poster composition, strong visual hierarchy, original tribute styling, no exact face copying, no official logos, no watermarks, no blurry text, no messy clutter. DO NOT reuse the same straight-standing pose; make each generation use a visibly different body angle, arm placement, foot placement, camera angle, and movement rhythm.\n";
+  prompt += "Text rule: keep all text large, readable, correctly spelled, balanced, and away from the face, glove, fedora, shoes, hands, and important props.\n";
+
+  document.getElementById("output").textContent = prompt;
+}
+async function copyPrompt(){
+  const text=document.getElementById("output").textContent;
+  await navigator.clipboard.writeText(text);
+  alert("Prompt copied as plain text.");
+}
+function clearOutput(){
+  document.getElementById("output").textContent="Your generated prompt will appear here.";
+}
+function clearAll(){
+  document.querySelectorAll("select").forEach(s=>s.selectedIndex=0);
+  document.querySelectorAll("input, textarea").forEach(i=>i.value="");
+  clearOutput();
+}
+function savePrompt(){
+  const text=document.getElementById("output").textContent;
+  const blob=new Blob([text],{type:"text/plain"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="moonwalk-legend-tribute-prompt.txt";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+generatePrompt();
+</script>
+</body>
+</html>
